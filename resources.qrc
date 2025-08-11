@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>skin/Purple/player_skin.bmp</file>
+        <file>skin/Purple/playlist_skin.bmp</file>
+        <file>skin/Purple/close.bmp</file>
+        <file>skin/Purple/minimize.bmp</file>
+        <file>skin/Purple/ontop.bmp</file>
+        <file>skin/Purple/minimode.bmp</file>
+        <file>skin/Purple/play.bmp</file>
+        <file>skin/Purple/pause.bmp</file>
+        <file>skin/Purple/next.BMP</file>
+        <file>skin/Purple/prev.bmp</file>
+        <file>skin/Purple/playlist.bmp</file>
+        <file>skin/Purple/lyric.bmp</file>
+        <file>skin/Purple/progress_thumb.bmp</file>
+        <file>skin/Purple/TTPlayer.ico</file>
+    </qresource>
+</RCC>
