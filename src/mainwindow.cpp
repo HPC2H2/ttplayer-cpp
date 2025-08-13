@@ -1,3 +1,4 @@
+// Modified: 2025-08-13
 #include "mainwindow.h"
 #include "playlist.h"
 #include <QFile>
@@ -38,13 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    if (m_animation) {
-        delete m_animation;
-    }
-    
-    if (m_playlistWindow) {
-        delete m_playlistWindow;
-    }
+    // m_animation is a QPropertyAnimation which is automatically deleted when parent is destroyed
+    // m_playlistWindow is deleted automatically as it's a child widget
 }
 
 void MainWindow::initUI()
@@ -146,10 +142,30 @@ void MainWindow::initUI()
     // Create lyrics label
     m_currentLyricLabel = new FadingLabel("", this);
     m_currentLyricLabel->setStyleSheet(
-        "color: #9370DB; font-size: 16px; font-weight: normal; font-family: PingFang SC;"
+        "color: #9370DB; font-size: 14px; font-weight: normal; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; "
+        "text-overflow: ellipsis; word-wrap: break-word;"
     );
     m_currentLyricLabel->setMinimumHeight(60);
+    m_currentLyricLabel->setFixedWidth(280);
+    m_currentLyricLabel->setAlignment(Qt::AlignCenter);
     m_currentLyricLabel->move(15, 30);
+    
+    // Create spectrum bars
+    m_spectrumBars = new SpectrumBars(this);
+    m_spectrumBars->setGeometry(15, 70, 280, 40);
+    m_spectrumBars->setStyleSheet("background-color: transparent;");
+    m_spectrumBars->setMediaPlayer(m_player);
+    
+    // Set custom colors for the spectrum bars
+    m_spectrumBars->setColors(
+        QColor("#8CEFFD"),
+        QColor("#71CDFD"),
+        QColor("#4C5FD1"),
+        QColor("#FF71CD")
+    );
+
+    m_spectrumBars->raise(); // Ensure it's on top
+    m_spectrumBars->show(); // Explicitly show the widget
     
     // Create playlist window
     m_playlistWindow = new PlayList(
@@ -171,13 +187,37 @@ void MainWindow::initUI()
     connect(m_minBtn, &QPushButton::clicked, this, &MainWindow::minimizeWindow);
     connect(m_musicListBtn, &QPushButton::clicked, this, &MainWindow::showMusicList);
     connect(m_playBtn, &QPushButton::clicked, this, &MainWindow::playAudio);
+    connect(m_nextBtn, &QPushButton::clicked, this, [this]() {
+        if (m_playlistWindow) {
+            QMetaObject::invokeMethod(m_playlistWindow, "nextSong", Qt::DirectConnection);
+        }
+    });
+    connect(m_previewBtn, &QPushButton::clicked, this, [this]() {
+        if (m_playlistWindow) {
+            QMetaObject::invokeMethod(m_playlistWindow, "previousSong", Qt::DirectConnection);
+        }
+    });
+    connect(m_lrcBtn, &QPushButton::clicked, this, [this]() {
+        if (m_currentLyricLabel) {
+            // Toggle lyrics visibility
+            m_currentLyricLabel->setVisible(!m_currentLyricLabel->isVisible());
+        }
+    });
     connect(m_player, &QMediaPlayer::positionChanged, this, &MainWindow::updateSliderPosition);
     connect(m_player, &QMediaPlayer::durationChanged, this, &MainWindow::setSliderDuration);
     connect(m_progressSlider, &QSlider::sliderPressed, this, &MainWindow::sliderPressed);
     connect(m_progressSlider, &QSlider::sliderReleased, this, &MainWindow::sliderReleased);
+    connect(m_progressSlider, &QSlider::valueChanged, this, [this]() {
+        if (m_progressSlider->isSliderDown()) {
+            // Update spectrum preview while dragging
+            if (m_spectrumBars) {
+                m_spectrumBars->updateForPosition(m_progressSlider->value());
+            }
+        }
+    });
     connect(m_volumeSlider, &QSlider::valueChanged, this, [this](int value) {
         if (m_player && m_player->audioOutput()) {
-            m_player->audioOutput()->setVolume(value / 100.0);
+            m_player->audioOutput()->setVolume(static_cast<float>(value) / 100.0f);
         }
     });
     
@@ -263,13 +303,54 @@ void MainWindow::dropEvent(QDropEvent *event)
 {
     const QList<QUrl> urls = event->mimeData()->urls();
     if (!urls.isEmpty()) {
+        bool foundValidFile = false;
+        QString firstValidPath;
+        
         for (const QUrl &url : urls) {
             QString filePath = url.toLocalFile();
             if (filePath.toLower().endsWith(".mp3")) {
                 qDebug("Dropped file path: %s", qUtf8Printable(filePath));
                 addPlaylist(filePath);
+                
+                if (!foundValidFile) {
+                    foundValidFile = true;
+                    firstValidPath = filePath;
+                }
             } else {
                 qDebug("Ignoring non-MP3 file: %s", qUtf8Printable(filePath));
+            }
+        }
+        
+        // Play the first valid file immediately
+        if (foundValidFile && m_playlistWindow) {
+            // Create a QFileInfo to get just the filename for display
+            QFileInfo fileInfo(firstValidPath);
+            QString displayName = fileInfo.baseName();
+            
+            // Set the current lyric label to show we're playing the file
+            if (m_currentLyricLabel) {
+                m_currentLyricLabel->setText(QString("正在播放: %1").arg(displayName));
+                m_currentLyricLabel->fadeIn();
+            }
+            
+        // Play the file directly
+            m_player->setSource(QUrl::fromLocalFile(firstValidPath));
+            m_player->play();
+            
+            // Update play button icon to show "pause" state
+            QList<QPixmap> images = cropImageIntoFourHorizontal(":/skin/Purple/pause.bmp");
+            if (images.size() >= 3) {
+                int round = 5;
+                QPixmap normalPixmap = roundPixmap(images[0], round);
+                QPixmap hoverPixmap = roundPixmap(images[1], round);
+                QPixmap pressedPixmap = roundPixmap(images[2], round);
+                
+                setupHoverPressedIcon(m_playBtn, normalPixmap, hoverPixmap, pressedPixmap);
+            }
+            
+            // Load lyrics if available
+            if (m_playlistWindow) {
+                m_playlistWindow->loadLyrics(firstValidPath, this);
             }
         }
     } else {
@@ -292,6 +373,9 @@ void MainWindow::addPlaylist(const QString &filePath)
             // Append the new path
             file.seek(file.size());
             QTextStream out(&file);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            out.setCodec("UTF-8");
+#endif
             out << filePath << "\n";
             qDebug("Added to playlist");
         } else {
@@ -303,16 +387,87 @@ void MainWindow::addPlaylist(const QString &filePath)
         if (m_playlistWindow) {
             m_playlistWindow->loadMusicFolder();
             m_playlistWindow->updatePlaylistDisplay();
+            
+            // If this is the first song added, play it automatically
+            if (m_player->playbackState() == QMediaPlayer::StoppedState) {
+                QListWidgetItem *firstItem = m_playlistWindow->findChild<QListWidget*>()->item(0);
+                if (firstItem) {
+                    QMetaObject::invokeMethod(m_playlistWindow, "selectSong", Qt::DirectConnection,
+                                             Q_ARG(QListWidgetItem*, firstItem));
+                    
+                    // The play button should now show pause state since a song is playing
+                    QList<QPixmap> images = cropImageIntoFourHorizontal(":/skin/Purple/pause.bmp");
+                    if (images.size() >= 3) {
+                        int round = 5;
+                        QPixmap normalPixmap = roundPixmap(images[0], round);
+                        QPixmap hoverPixmap = roundPixmap(images[1], round);
+                        QPixmap pressedPixmap = roundPixmap(images[2], round);
+                        
+                        setupHoverPressedIcon(m_playBtn, normalPixmap, hoverPixmap, pressedPixmap);
+                    }
+                }
+            }
         }
     }
 }
 
 void MainWindow::playAudio()
 {
+    // 检查是否有可播放的歌曲
+    bool hasSongs = false;
+    if (m_playlistWindow) {
+        QListWidget *songList = m_playlistWindow->findChild<QListWidget*>();
+        hasSongs = songList && songList->count() > 0;
+    }
+    
+    // 如果没有歌曲且没有当前播放源，禁用播放功能
+    if (!hasSongs && m_player->source().isEmpty()) {
+        qDebug() << "没有可播放的歌曲";
+        return;
+    }
+    
     if (m_player->playbackState() == QMediaPlayer::PlayingState) {
         m_player->pause();
+        // Update play button icon to show "play" state
+        QList<QPixmap> images = cropImageIntoFourHorizontal(":/skin/Purple/play.bmp");
+        if (images.size() >= 3) {
+            int round = 5;
+            QPixmap normalPixmap = roundPixmap(images[0], round);
+            QPixmap hoverPixmap = roundPixmap(images[1], round);
+            QPixmap pressedPixmap = roundPixmap(images[2], round);
+            
+            setupHoverPressedIcon(m_playBtn, normalPixmap, hoverPixmap, pressedPixmap);
+        }
+        
+        // Update spectrum bars for current position when paused
+        if (m_spectrumBars) {
+            m_spectrumBars->updateForPosition(m_player->position());
+        }
     } else {
+        // If no song is playing, select the first song in the playlist
+        if (m_player->source().isEmpty() && m_playlistWindow) {
+            QListWidget *songList = m_playlistWindow->findChild<QListWidget*>();
+            if (songList && songList->count() > 0) {
+                QListWidgetItem *firstItem = songList->item(0);
+                if (firstItem) {
+                    QMetaObject::invokeMethod(m_playlistWindow, "selectSong", Qt::DirectConnection,
+                                             Q_ARG(QListWidgetItem*, firstItem));
+                    return; // selectSong will start playing
+                }
+            }
+        }
+        
         m_player->play();
+        // Update play button icon to show "pause" state
+        QList<QPixmap> images = cropImageIntoFourHorizontal(":/skin/Purple/pause.bmp");
+        if (images.size() >= 3) {
+            int round = 5;
+            QPixmap normalPixmap = roundPixmap(images[0], round);
+            QPixmap hoverPixmap = roundPixmap(images[1], round);
+            QPixmap pressedPixmap = roundPixmap(images[2], round);
+            
+            setupHoverPressedIcon(m_playBtn, normalPixmap, hoverPixmap, pressedPixmap);
+        }
     }
 }
 
@@ -435,14 +590,22 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         m_dragging = true;
-        m_offset = event->globalPosition().toPoint() - window()->pos();
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            m_offset = event->globalPosition().toPoint() - window()->pos();
+        #else
+            m_offset = event->globalPos() - window()->pos();
+        #endif
     }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_dragging) {
-        window()->move(event->globalPosition().toPoint() - m_offset);
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            window()->move(event->globalPosition().toPoint() - m_offset);
+        #else
+            window()->move(event->globalPos() - m_offset);
+        #endif
     }
 }
 
@@ -468,7 +631,11 @@ void MainWindow::setSliderDuration(qint64 duration)
 void MainWindow::sliderPressed()
 {
     if (m_playlistWindow) {
-        m_playlistWindow->findChild<QTimer*>()->stop();  // Stop lyrics update
+        // Use a more specific search to find the lyrics timer
+        QTimer *lyricTimer = m_playlistWindow->findChild<QTimer*>("lyricsUpdateTimer");
+        if (lyricTimer) {
+            lyricTimer->stop();  // Stop lyrics update
+        }
     }
 }
 
@@ -477,11 +644,19 @@ void MainWindow::sliderReleased()
     qint64 position = m_progressSlider->value();
     m_player->setPosition(position);
     
+    // Update spectrum bars to match the new position
+    if (m_spectrumBars) {
+        // Force spectrum update for the new position
+        m_spectrumBars->updateForPosition(position);
+    }
+    
     if (m_playlistWindow) {
-        QTimer *lyricTimer = m_playlistWindow->findChild<QTimer*>();
+        QTimer *lyricTimer = m_playlistWindow->findChild<QTimer*>("lyricsUpdateTimer");
         if (lyricTimer) {
             lyricTimer->start(100);  // Resume lyrics update
-            m_playlistWindow->updateLyrics();  // Update lyrics immediately
+            
+            // Use a safer method to check if updateLyrics exists and call it
+            QMetaObject::invokeMethod(m_playlistWindow, "updateLyrics", Qt::DirectConnection);
         }
     }
 }

@@ -13,6 +13,7 @@
 
 #include "fadinglabel.h"
 #include "imageslider.h"
+#include "spectrumbars.h"
 
 class PlayList;
 
@@ -67,6 +68,7 @@ private:
     ImageSlider *m_progressSlider;
     ImageSlider *m_volumeSlider;
     FadingLabel *m_currentLyricLabel;
+    SpectrumBars *m_spectrumBars;
     
     // Player components
     QMediaPlayer *m_player;

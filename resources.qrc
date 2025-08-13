@@ -14,5 +14,6 @@
         <file>skin/Purple/lyric.bmp</file>
         <file>skin/Purple/progress_thumb.bmp</file>
         <file>skin/Purple/TTPlayer.ico</file>
+        <file>skin/Purple/Visual.xml</file>
     </qresource>
 </RCC>

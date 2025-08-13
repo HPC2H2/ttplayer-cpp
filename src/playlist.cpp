@@ -36,12 +36,10 @@ PlayList::~PlayList()
 {
     if (m_lyricTimer) {
         m_lyricTimer->stop();
-        delete m_lyricTimer;
+        // m_lyricTimer will be deleted automatically as it's a child of this
     }
     
-    if (m_animation) {
-        delete m_animation;
-    }
+    // m_animation will be deleted automatically as it's a child of this
 }
 
 void PlayList::initUI()
@@ -112,39 +110,63 @@ void PlayList::initUI()
     // Load music playlist
     loadMusicFolder();
     
-    // Create lyrics timer
+    // Create lyrics timer with object name for easier access
     m_lyricTimer = new QTimer(this);
+    m_lyricTimer->setObjectName("lyricsUpdateTimer");
     connect(m_lyricTimer, &QTimer::timeout, this, &PlayList::updateLyrics);
     m_lyricTimer->start(100);  // Check lyrics every 100ms
     
     // Connect signals and slots
     connect(m_closeBtn, &QPushButton::clicked, this, &PlayList::exitAll);
     connect(m_songList, &QListWidget::itemDoubleClicked, this, &PlayList::selectSong);
+    
+    // Connect to media player signals to handle end of media
+    if (m_mainWindow) {
+        QMediaPlayer *player = m_mainWindow->findChild<QMediaPlayer*>();
+        if (player) {
+            connect(player, &QMediaPlayer::mediaStatusChanged, this, [this](QMediaPlayer::MediaStatus status) {
+                if (status == QMediaPlayer::EndOfMedia) {
+                    // Auto-play next song when current song ends
+                    QTimer::singleShot(500, this, &PlayList::nextSong);
+                }
+            });
+        }
+    }
 }
 
 void PlayList::loadMusicFolder()
 {
-    try {
-        QFile file("play_list.txt");
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
+    m_playlist.clear();
+    
+    QFile file("play_list.txt");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&file);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-            in.setCodec("UTF-8");
+        in.setCodec("UTF-8");
 #endif
-            m_playlist.clear();
-            
-            while (!in.atEnd()) {
-                QString line = in.readLine();
-                if (!line.isEmpty()) {
-                    m_playlist.append(line);
+        
+        QStringList validPaths;
+        
+        while (!in.atEnd()) {
+            QString line = in.readLine().trimmed();
+            if (!line.isEmpty()) {
+                // Check if file exists before adding to playlist
+                QFileInfo fileInfo(line);
+                if (fileInfo.exists() && fileInfo.isFile()) {
+                    validPaths.append(line);
                 }
             }
-            
-            file.close();
-            updatePlaylistDisplay();
         }
-    } catch (const std::exception &e) {
-        qDebug("Failed to load playlist: %s", e.what());
+        
+        file.close();
+        
+        // Update the playlist with only valid paths
+        m_playlist = validPaths;
+        
+        // Save the updated playlist file if any invalid paths were removed
+        if (validPaths.size() < m_playlist.size()) {
+            updatePlaylistFile();
+        }
     }
 }
 
@@ -159,6 +181,9 @@ void PlayList::updatePlaylistDisplay()
         // Create list item with center alignment
         QListWidgetItem *item = new QListWidgetItem(nameWithoutExt);
         item->setTextAlignment(Qt::AlignCenter);
+        
+        // Store the full path as item data for easier access
+        item->setData(Qt::UserRole, path);
         
         m_songList->addItem(item);
     }
@@ -289,14 +314,22 @@ void PlayList::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         m_dragging = true;
-        m_offset = event->globalPosition().toPoint() - window()->pos();
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            m_offset = event->globalPosition().toPoint() - window()->pos();
+        #else
+            m_offset = event->globalPos() - window()->pos();
+        #endif
     }
 }
 
 void PlayList::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_dragging) {
-        window()->move(event->globalPosition().toPoint() - m_offset);
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            window()->move(event->globalPosition().toPoint() - m_offset);
+        #else
+            window()->move(event->globalPos() - m_offset);
+        #endif
     }
 }
 
@@ -309,25 +342,156 @@ void PlayList::mouseReleaseEvent(QMouseEvent *event)
 
 void PlayList::selectSong(QListWidgetItem *item)
 {
-    int index = m_songList->row(item);
-    if (index >= 0 && index < m_playlist.size() && m_mainWindow) {
-        QMediaPlayer *player = m_mainWindow->findChild<QMediaPlayer*>();
-        if (player) {
-            player->setSource(QUrl::fromLocalFile(m_playlist[index]));
-            
-            // Set volume
-            ImageSlider *volumeSlider = m_mainWindow->findChild<ImageSlider*>("m_volumeSlider");
-            if (volumeSlider) {
-                int volume = qMin(volumeSlider->currentVolume(), 100);
-                QAudioOutput *audioOutput = player->audioOutput();
-                if (audioOutput) {
-                    audioOutput->setVolume(volume / 100.0);
-                }
-            }
-            
-            player->play();
-            loadLyrics(m_playlist[index], m_mainWindow);
+    if (!item || !m_mainWindow) {
+        return;
+    }
+    
+    // Get the file path directly from the item data
+    QString filePath = item->data(Qt::UserRole).toString();
+    if (filePath.isEmpty()) {
+        // Fall back to the old method if data is not available
+        int index = m_songList->row(item);
+        if (index >= 0 && index < m_playlist.size()) {
+            filePath = m_playlist[index];
+        } else {
+            return;
         }
+    }
+    
+    // Check if file exists
+    QFileInfo fileInfo(filePath);
+    if (!fileInfo.exists()) {
+        // Show error message in lyrics label
+        FadingLabel *lyricLabel = m_mainWindow->findChild<FadingLabel*>();
+        if (lyricLabel) {
+            lyricLabel->setText(QString("音频文件不存在: \"%1\"\n请拖入MP3文件播放").arg(filePath));
+            lyricLabel->fadeIn();
+        }
+        
+        // Remove the non-existent file from the playlist
+        int index = m_songList->row(item);
+        if (index >= 0 && index < m_playlist.size()) {
+            m_playlist.removeAt(index);
+            delete m_songList->takeItem(index);
+            
+            // Update the playlist file
+            updatePlaylistFile();
+        }
+        return;
+    }
+    
+    QMediaPlayer *player = m_mainWindow->findChild<QMediaPlayer*>();
+    if (player) {
+        player->setSource(QUrl::fromLocalFile(filePath));
+        
+        // Set volume
+        ImageSlider *volumeSlider = m_mainWindow->findChild<ImageSlider*>();
+        if (volumeSlider) {
+            int volume = qMin(volumeSlider->currentVolume(), 100);
+            QAudioOutput *audioOutput = player->audioOutput();
+            if (audioOutput) {
+                audioOutput->setVolume(static_cast<float>(volume) / 100.0f);
+            }
+        }
+        
+        player->play();
+        
+        // Update play button to show pause state
+        QPushButton *playBtn = m_mainWindow->findChild<QPushButton*>();
+        // Find the play button by checking all buttons
+        for (QPushButton* btn : m_mainWindow->findChildren<QPushButton*>()) {
+            if (btn->geometry().width() == 50 && btn->geometry().height() == 50) {
+                playBtn = btn;
+                break;
+            }
+        }
+        if (playBtn) {
+            QList<QPixmap> images = cropImageIntoFourHorizontal(":/skin/Purple/pause.bmp");
+            if (images.size() >= 3) {
+                int round = 5;
+                QPixmap normalPixmap = roundPixmap(images[0], round);
+                QPixmap hoverPixmap = roundPixmap(images[1], round);
+                QPixmap pressedPixmap = roundPixmap(images[2], round);
+                
+                // Use the MainWindow's method to set up the button
+                QMetaObject::invokeMethod(m_mainWindow, "setupHoverPressedIcon", Qt::DirectConnection,
+                                         Q_ARG(QPushButton*, playBtn),
+                                         Q_ARG(QPixmap, normalPixmap),
+                                         Q_ARG(QPixmap, hoverPixmap),
+                                         Q_ARG(QPixmap, pressedPixmap));
+            }
+        }
+        
+        loadLyrics(filePath, m_mainWindow);
+        
+        // Update the selected item in the list
+        m_songList->setCurrentItem(item);
+    }
+}
+
+// Add a new method to update the playlist file
+void PlayList::updatePlaylistFile()
+{
+    QFile file("play_list.txt");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        out.setCodec("UTF-8");
+#endif
+        
+        for (const QString &path : m_playlist) {
+            out << path << "\n";
+        }
+        
+        file.close();
+    }
+}
+
+void PlayList::nextSong()
+{
+    if (m_playlist.isEmpty() || !m_mainWindow) {
+        return;
+    }
+    
+    // Get current index
+    int currentIndex = m_songList->currentRow();
+    if (currentIndex < 0) {
+        // No song selected, start with the first one
+        currentIndex = 0;
+    }
+    
+    // Calculate next index (with wrap-around)
+    int nextIndex = (currentIndex + 1) % m_playlist.size();
+    
+    // Select the next song
+    m_songList->setCurrentRow(nextIndex);
+    QListWidgetItem *item = m_songList->item(nextIndex);
+    if (item) {
+        selectSong(item);
+    }
+}
+
+void PlayList::previousSong()
+{
+    if (m_playlist.isEmpty() || !m_mainWindow) {
+        return;
+    }
+    
+    // Get current index
+    int currentIndex = m_songList->currentRow();
+    if (currentIndex < 0) {
+        // No song selected, start with the last one
+        currentIndex = 0;
+    }
+    
+    // Calculate previous index (with wrap-around)
+    int prevIndex = (currentIndex - 1 + m_playlist.size()) % m_playlist.size();
+    
+    // Select the previous song
+    m_songList->setCurrentRow(prevIndex);
+    QListWidgetItem *item = m_songList->item(prevIndex);
+    if (item) {
+        selectSong(item);
     }
 }
 
@@ -342,30 +506,49 @@ void PlayList::loadLyrics(const QString &audioPath, MainWindow *mainWindow)
     
     QFile file(lrcPath);
     if (!file.exists()) {
-        FadingLabel *lyricLabel = mainWindow->findChild<FadingLabel*>();
-        if (lyricLabel) {
-            lyricLabel->setText("No lyrics found");
+        // Try alternative lyrics file name formats
+        QStringList alternativeExtensions = {".txt", ".LRC", ".TXT"};
+        bool found = false;
+        
+        for (const QString &ext : alternativeExtensions) {
+            QString altPath = basePath + ext;
+            QFile altFile(altPath);
+            if (altFile.exists()) {
+                lrcPath = altPath;
+                found = true;
+                break;
+            }
         }
-        return;
+        
+        if (!found) {
+            FadingLabel *lyricLabel = mainWindow->findChild<FadingLabel*>();
+            if (lyricLabel) {
+                lyricLabel->setText("No lyrics found");
+                lyricLabel->fadeIn();  // Make sure the "No lyrics found" message is visible
+            }
+            return;
+        }
     }
     
     // Try multiple encodings to read lyrics file
     QStringList encodings = {"UTF-8", "GBK", "GB2312", "Latin1"};
     QStringList lines;
     
+    QFile lyricsFile(lrcPath);  // Use the potentially updated lrcPath
+    
     for (const QString &encoding : encodings) {
-        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            QTextStream in(&file);
+        if (lyricsFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&lyricsFile);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
             in.setCodec(qPrintable(encoding));
 #endif
             
             try {
                 lines = in.readAll().split('\n');
-                file.close();
+                lyricsFile.close();
                 break;
             } catch (...) {
-                file.close();
+                lyricsFile.close();
                 continue;
             }
         }

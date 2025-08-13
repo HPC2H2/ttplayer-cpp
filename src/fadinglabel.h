@@ -12,10 +12,14 @@ class FadingLabel : public QLabel
 
 public:
     explicit FadingLabel(const QString &text = "", QWidget *parent = nullptr);
+    ~FadingLabel();
     
     // Fade in/out animations
     void fadeIn();
     void fadeOut();
+    
+    // Override setText to handle text that might exceed the display area
+    void setText(const QString &text);
 
 private:
     QGraphicsOpacityEffect *m_effect;

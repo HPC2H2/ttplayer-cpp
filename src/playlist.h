@@ -24,6 +24,8 @@ public:
     QPropertyAnimation* startAnimation(float start, float end);
     void loadLyrics(const QString &audioPath, MainWindow *mainWindow);
     void updateLyrics();
+    void nextSong();
+    void previousSong();
     void addPlaylist(const QString &filePath);
 
 protected:
@@ -41,6 +43,7 @@ private:
     void initUI();
     QPixmap roundPixmap(const QPixmap &pixmap, int radius);
     QList<QPixmap> cropImageIntoFourHorizontal(const QString &imagePath);
+    void updatePlaylistFile();
 
     // UI Elements
     QPushButton *m_closeBtn;

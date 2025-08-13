@@ -1,24 +1,19 @@
 cmake_minimum_required(VERSION 3.16)
-# Use a project name that matches the current directory to avoid creating a new subdirectory
-project(ttplayer-cpp VERSION 1.0.0 LANGUAGES CXX)
+# 同时启用 C 和 C++ 支持
+project(ttplayer-cpp VERSION 1.0.0 LANGUAGES CXX C)
 
-# Set build directory to current directory
 set(CMAKE_BINARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Add compiler-specific options
-if(MSVC)
-    add_compile_options(/permissive-)
-endif()
-
+# 启用 MOC/UIC/RCC
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# Try to find Qt6 first, fall back to Qt5 if not found
+# 查找 Qt
 find_package(Qt6 COMPONENTS Core Gui Widgets Multimedia MultimediaWidgets QUIET)
 if (NOT Qt6_FOUND)
     message(STATUS "Qt6 not found, trying Qt5...")
@@ -28,31 +23,31 @@ else()
     set(QT_VERSION_MAJOR 6)
 endif()
 
-# Add include directories
+# 头文件搜索路径
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# Add resource files
+# 资源文件
 set(RESOURCE_FILES
     resources.qrc
 )
 
-# Source files
+# 源文件
 set(SOURCE_FILES
     src/main.cpp
     src/mainwindow.cpp
-    src/mainwindow.h
     src/playlist.cpp
-    src/playlist.h
     src/fadinglabel.cpp
-    src/fadinglabel.h
     src/imageslider.cpp
-    src/imageslider.h
+    src/spectrumbars.cpp
+    src/mp3decoder.cpp
+    src/kiss_fft.c
+    src/kiss_fftr.c
 )
 
-# Create executable
+# 创建可执行文件
 add_executable(TTPlayer ${SOURCE_FILES} ${RESOURCE_FILES})
 
-# Link Qt libraries
+# 链接 Qt
 if(QT_VERSION_MAJOR EQUAL 6)
     target_link_libraries(TTPlayer PRIVATE
         Qt6::Core
@@ -71,6 +66,6 @@ else()
     )
 endif()
 
-# Copy skin files to build directory
+# 复制资源
 file(COPY ${CMAKE_SOURCE_DIR}/skin DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/play_list.txt DESTINATION ${CMAKE_BINARY_DIR})
