@@ -8,13 +8,14 @@
 ## English
 
 ### Introduction
-TTPlayer is a lightweight music player developed with Qt 6.8.2 and C++. This project is a port of the original [TTPlayer](https://github.com/jthhpcqy/ttplayer) which was developed using PyQt5. The goal of this port is to improve performance and provide a native application experience while maintaining the same beautiful UI and functionality. Future enhancements will include features like real-time spectrum visualization, lyrics synchronization, and more.
+TTPlayer is a lightweight music player developed with Qt 6.8.2 and C++. This project is a port of the original [TTPlayer](https://github.com/jthhpcqy/ttplayer) which was developed using PyQt5. The goal of this port is to improve performance and provide a native application experience while maintaining the same beautiful UI and functionality. Future enhancements will include more features.
 
 ### Features
 - Clean and modern UI
 - Playlist management
 - Drag and drop support for adding music files
 - Lyrics display
+- Audio spectrum visualization (added 2025-08-13)
 - Volume control
 - Keyboard shortcuts for playback control
 - Window opacity animation effects
@@ -78,13 +79,14 @@ All copyrights belong to the original authors. This project is for educational p
 ## 中文
 
 ### 简介
-TTPlayer 是一款使用 Qt 6.8.2 和 C++ 开发的轻量级音乐播放器。本项目是原始 [TTPlayer](https://github.com/jthhpcqy/ttplayer)（使用 PyQt5 开发）的移植版本。此移植的目标是在保持相同美观界面和功能的同时，提高性能并提供原生应用程序体验。后续会完善功能，如添加实时频谱、歌词同步等等。
+TTPlayer 是一款使用 Qt 6.8.2 和 C++ 开发的轻量级音乐播放器。本项目是原始 [TTPlayer](https://github.com/jthhpcqy/ttplayer)（使用 PyQt5 开发）的移植版本。此移植的目标是在保持相同美观界面和功能的同时，提高性能并提供原生应用程序体验。后续会增加功能。
 
 ### 功能特点
 - 简洁现代的用户界面
 - 播放列表管理
 - 支持拖放添加音乐文件
 - 歌词显示
+- 音频频谱可视化（2025-08-13新增）
 - 音量控制
 - 播放控制的键盘快捷键
 - 窗口透明度动画效果
@@ -137,7 +139,12 @@ TTPlayer.exe
 ### 免责声明
 所有版权归原作者所有。本项目仅供学习用途。
 
+### 最近更新
+- 2025-08-13：引入了频谱显示功能。后续将美化频谱的显示，增加MP3解码和MediaPlayer位置同步设计。
+
 ### 致谢
 - 原始千千静听由郑南岭先生开发
 - Python版本 [TTPlayer](https://github.com/jthhpcqy/ttplayer) 由 jthhpcqy 开发
 - Qt 框架
+- [MiniMP3](https://github.com/lieff/minimp3) - 轻量级MP3解码库
+- [KissFFT](https://github.com/mborgerding/kissfft) - 快速傅里叶变换库
