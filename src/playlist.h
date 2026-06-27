@@ -6,7 +6,9 @@
 #include <QListWidget>
 #include <QPropertyAnimation>
 #include <QTimer>
+#ifdef QT_MULTIMEDIA_ENABLED
 #include <QMediaPlayer>
+#endif
 #include <QPair>
 
 class MainWindow;
@@ -24,8 +26,8 @@ public:
     QPropertyAnimation* startAnimation(float start, float end);
     void loadLyrics(const QString &audioPath, MainWindow *mainWindow);
     void updateLyrics();
-    void nextSong();
-    void previousSong();
+    Q_INVOKABLE void nextSong();
+    Q_INVOKABLE void previousSong();
     void addPlaylist(const QString &filePath);
 
 protected:
@@ -37,7 +39,7 @@ protected:
 
 private slots:
     void exitAll();
-    void selectSong(QListWidgetItem *item);
+    Q_INVOKABLE void selectSong(QListWidgetItem *item);
 
 private:
     void initUI();

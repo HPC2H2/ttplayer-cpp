@@ -1,0 +1,108 @@
+qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 7.1.3 LGPL version 2.1 or later
+Unknown property text-overflow
+Unknown property word-wrap
+SpectrumBars initialized with size: 100 x 40
+Unknown property text-overflow
+Unknown property word-wrap
+Unknown property text-overflow
+Unknown property word-wrap
+Already exists in playlist
+[DropEvent] foundValidFile= true firstValidPath= "C:/Users/hpc2h/Music/Ğ¡Æ»¹û.mp3" m_playlistWindow= valid
+[mp3 @ 000002ef18a4a880] Estimating duration from bitrate, this may be inaccurate
+Input #0, mp3, from 'C:/Users/hpc2h/Music/å°è‹¹æœ.mp3':
+  Metadata:
+    album           : å°è‹¹æœ
+    artist          : ç­·å­å…„å¼Ÿ
+    comment         : 5ndéŸ³ä¹ç½‘www.5nd.comæ­£ç‰ˆéŸ³ä¹å°½åœ¨5ndéŸ³ä¹ç½‘
+    title           : å°è‹¹æœ
+    track           : 2
+    date            : 2014
+  Duration: 00:03:31.57, start: 0.000000, bitrate: 128 kb/s
+  Stream #0:0: Audio: mp3 (mp3float), 44100 Hz, stereo, fltp, 128 kb/s
+  Stream #0:1: Video: mjpeg (Baseline), yuvj444p(pc, bt470bg/unknown/unknown), 240x240 [SAR 1:1 DAR 1:1], 90k tbr, 90k tbn (attached pic)
+      Metadata:
+        title           : e
+        comment         : Cover (front)
+³É¹¦´ò¿ªMP3ÎÄ¼ş: "C:/Users/hpc2h/Music/Ğ¡Æ»¹û.mp3" ²ÉÑùÂÊ: 44100 Í¨µÀÊı: 2
+³É¹¦ÆôÓÃÊµÊ±MP3½âÂë: "C:/Users/hpc2h/Music/Ğ¡Æ»¹û.mp3"
+[Player] playbackStateChanged: QMediaPlayer::PlayingState
+[MP3Decoder] ½âÂëÏß³Ì¿ªÊ¼ÔËĞĞ, sampleRate= 44100 channels= 2
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 0 ms Ê±¼ä: 1782569860328
+SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 757 ms Ê±¼ä: 1782569861329
+SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 20349 ms Ê±¼ä: 1782569862338
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 21342 ms Ê±¼ä: 1782569863343
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 94354 ms Ê±¼ä: 1782569864348
+[MP3Decoder] ÒÑ½âÂë 100 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 95373 ms Ê±¼ä: 1782569865348
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[Player] playbackStateChanged: QMediaPlayer::StoppedState
+[Player] playbackStateChanged: QMediaPlayer::PlayingState
+[Player] playbackStateChanged: QMediaPlayer::StoppedState
+SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
+[Player] playbackStateChanged: QMediaPlayer::PlayingState
+SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
+SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 3004 ms Ê±¼ä: 1782569869476
+SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[MP3Decoder] ÒÑ½âÂë 200 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 24241 ms Ê±¼ä: 1782569870476
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 57756 ms Ê±¼ä: 1782569871476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 58749 ms Ê±¼ä: 1782569872476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 59768 ms Ê±¼ä: 1782569873476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 60760 ms Ê±¼ä: 1782569874476
+[SPEC-DBG]  bar[0]= 0  bar[10]= 0.101487  bar[20]= 0.0242376  bar[40]= 0.000806337
+[MP3Decoder] ÒÑ½âÂë 300 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 61753 ms Ê±¼ä: 1782569875476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 62746 ms Ê±¼ä: 1782569876476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 63764 ms Ê±¼ä: 1782569877476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 64757 ms Ê±¼ä: 1782569878476
+[MP3Decoder] ÒÑ½âÂë 400 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 65750 ms Ê±¼ä: 1782569879476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 66768 ms Ê±¼ä: 1782569880476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 67761 ms Ê±¼ä: 1782569881476
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 68754 ms Ê±¼ä: 1782569882477
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 69746 ms Ê±¼ä: 1782569883485
+[MP3Decoder] ÒÑ½âÂë 500 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 70765 ms Ê±¼ä: 1782569884486
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 71758 ms Ê±¼ä: 1782569885486
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 72751 ms Ê±¼ä: 1782569886486
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 73769 ms Ê±¼ä: 1782569887487
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 74762 ms Ê±¼ä: 1782569888488
+[SPEC-DBG]  bar[0]= 0  bar[10]= 0.0821819  bar[20]= 0.0535547  bar[40]= 0.00178188
+[MP3Decoder] ÒÑ½âÂë 600 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 75755 ms Ê±¼ä: 1782569889496
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 76747 ms Ê±¼ä: 1782569890498
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 77766 ms Ê±¼ä: 1782569891503
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 78759 ms Ê±¼ä: 1782569892506
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 79751 ms Ê±¼ä: 1782569893506
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[MP3Decoder] ÒÑ½âÂë 700 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 108277 ms Ê±¼ä: 1782569894506
+QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 134321 ms Ê±¼ä: 1782569895506
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 135340 ms Ê±¼ä: 1782569896516
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 136333 ms Ê±¼ä: 1782569897516
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 137351 ms Ê±¼ä: 1782569898516
+[MP3Decoder] ÒÑ½âÂë 800 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 138396 ms Ê±¼ä: 1782569899526
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 139389 ms Ê±¼ä: 1782569900526
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 140408 ms Ê±¼ä: 1782569901526
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 141400 ms Ê±¼ä: 1782569902526
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 142393 ms Ê±¼ä: 1782569903527
+[SPEC-DBG]  bar[0]= 0  bar[10]= 0.0759098  bar[20]= 0.0683508  bar[40]= 0.00126108
+[MP3Decoder] ÒÑ½âÂë 900 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 143386 ms Ê±¼ä: 1782569904530
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 144404 ms Ê±¼ä: 1782569905536
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 145397 ms Ê±¼ä: 1782569906536
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 146390 ms Ê±¼ä: 1782569907539
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 147382 ms Ê±¼ä: 1782569908546
+[MP3Decoder] ÒÑ½âÂë 1000 Ö¡, Õı³£ÔËĞĞÖĞ
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 148401 ms Ê±¼ä: 1782569909546
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 149394 ms Ê±¼ä: 1782569910546
+[MP3Decoder] ½âÂëÏß³ÌÕı³£ÍË³ö, ×Ü¹²½âÂë 1042 Ö¡

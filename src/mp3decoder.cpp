@@ -19,10 +19,7 @@
 #include "minimp3_ex.h"
 
 #include "mp3decoder.h"
-
-extern "C" {
-#include "kiss_fft.h"
-}
+// 注意: 不再需要 kiss_fft.h, 已替换为自有 fft.h (见 mp3decoder.h)
 
 /**
  * @brief 构造函数
@@ -32,15 +29,10 @@ MP3Decoder::MP3Decoder(QObject* parent)
       m_currentPosition(0),
       m_sampleRate(0),
       m_channels(0),
-      m_fftCfg(nullptr),
-      m_fftIn(FFT_SIZE),
-      m_fftOut(FFT_SIZE)
+      m_fft(std::make_unique<FFT>(FFT_SIZE)),
+      m_fftIn(FFT_SIZE)
 {
-    // 初始化 FFT 配置
-    m_fftCfg = kiss_fft_alloc(FFT_SIZE, 0, nullptr, nullptr);
-    if (!m_fftCfg) {
-        qWarning() << "MP3Decoder：KissFFT初始化失败！";
-    }
+    // FFT 已在初始化列表中创建 (替代原来的 kiss_fft_alloc)
 }
 
 /**
@@ -64,12 +56,7 @@ MP3Decoder::~MP3Decoder()
         terminate();
         wait();
     }
-
-    // 释放 FFT 资源
-    if (m_fftCfg) {
-        free(m_fftCfg);
-        m_fftCfg = nullptr;
-    }
+    // FFT 由 unique_ptr 自动释放 (替代原来的 free(m_fftCfg))
 }
 
 /**
@@ -190,48 +177,35 @@ void MP3Decoder::stopDecoding()
  */
 void MP3Decoder::computeSpectrum(const std::vector<float>& samples)
 {
-    if (samples.empty() || !m_fftCfg) return;
+    if (samples.empty() || !m_fft) return;
 
     const int n = FFT_SIZE;
     const int halfN = n / 2;
 
-    // 1. 加窗 FFT
+    // 1. 加窗 (Hanning window)
     for (int i = 0; i < n; ++i) {
-        float sample = (i < samples.size()) ? samples[i] : 0.0f;
+        float sample = (i < static_cast<int>(samples.size())) ? samples[i] : 0.0f;
         float window = 0.5f * (1.0f - std::cos(2.0f * M_PI * i / (n - 1)));
-        m_fftIn[i].r = sample * window;
-        m_fftIn[i].i = 0.0f;
+        m_fftIn[i] = FftComplex(sample * window, 0.0f);
     }
 
-    kiss_fft(m_fftCfg, m_fftIn.data(), m_fftOut.data());
+    // 2. 执行 FFT
+    std::vector<FftComplex> fullOutput(FFT_SIZE);
+    m_fft->forward(m_fftIn, fullOutput);
 
-    // 2. 转 dBFS
+    // 3. 提取前 N/2 点频谱幅度值（线性，原始值）
+    // 策略：只做最基本的归一化，所有感知映射交给 Spectrumbars 统一处理
+    // 这与 Spectralizer 的做法一致：FFT → 原始幅度 → 回调中处理
     std::vector<float> normalized(halfN);
-    const float kMinDb = -40.0f;  // 最小显示阈值
-    const float kMaxDb = -3.0f;   // 参考最大值（留 3dB headroom）
 
-    for (int i = 0; i < halfN; ++i) {
-        float re = m_fftOut[i].r;
-        float im = m_fftOut[i].i;
+    for (int i = 0; i < halfN && i < static_cast<int>(fullOutput.size()); ++i) {
+        float re = fullOutput[i].r;
+        float im = fullOutput[i].i;
         float mag = std::sqrt(re*re + im*im);
-        float db = 20.0f * std::log10(mag + 1e-9f);
-
-        // 固定范围映射
-        float clampedDb = std::clamp(db, kMinDb, kMaxDb);
-        normalized[i] = (clampedDb - kMinDb) / (kMaxDb - kMinDb);
-
-        // qDebug() << "频点" << i
-        //          << "| 频率 ≈" << (i * 44100.0f / FFT_SIZE) << "Hz"
-        //          << "| 原始响度 =" << db << "dBFS"
-        //          << "| 显示响度 =" << clampedDb << "dB"
-        //          << "| 输出值 =" << normalized[i]  // 这是传给 UI 的 [0,1] 值
-        //          << "(将用于设置柱子高度)";
-
-        // // gamma 校正，提升暗部
-        // normalized[i] = std::pow(normalized[i], 0.75f);
+        normalized[i] = mag;   // 原始 FFT 幅度值，不做任何非线性变换
     }
 
-    // 3. 线程安全更新
+    // 4. 线程安全更新
     {
         QMutexLocker locker(&m_mutex);
         m_spectrumData = normalized;
@@ -252,9 +226,11 @@ void MP3Decoder::run()
 {
     // 确保解码器已初始化
     if (m_sampleRate == 0) {
-        qWarning() << "解码器未初始化，采样率为0";
+        qWarning() << "[MP3Decoder] 解码器未初始化，采样率为0";
         return;
     }
+
+    qDebug() << "[MP3Decoder] 解码线程开始运行, sampleRate=" << m_sampleRate << "channels=" << m_channels;
 
     const size_t maxBufferSize = static_cast<size_t>(m_sampleRate) * 2; // 2秒缓冲
     const int numBands = 41;
@@ -264,80 +240,91 @@ void MP3Decoder::run()
     bool m_isFirstFrame = true;
     qint64 lastSeekPosition = -1;
     qint64 lastProcessTime = 0;
+    int frameCount = 0;
 
-    while (!isInterruptionRequested()) {
-        // 1. 获取目标位置
-        qint64 targetPos;
-        {
-            QMutexLocker locker(&m_mutex);
-            targetPos = m_currentPosition;
-        }
+    try {
+        while (!isInterruptionRequested()) {
+            // 1. 获取目标位置
+            qint64 targetPos;
+            {
+                QMutexLocker locker(&m_mutex);
+                targetPos = m_currentPosition;
+            }
 
-        // 2. 判断是否需要跳转（首次或跳转超过100ms）
-        bool shouldSeek = m_isFirstFrame || std::abs(targetPos - lastSeekPosition) > 100;
+            // 2. 判断是否需要跳转（首次或跳转超过100ms）
+            bool shouldSeek = m_isFirstFrame || std::abs(targetPos - lastSeekPosition) > 100;
 
-        // 确保即使位置没有变化，也至少每50ms处理一次新帧
-        qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
-        bool shouldProcess = (currentTime - lastProcessTime) > 50;
+            // 确保即使位置没有变化，也至少每50ms处理一次新帧
+            qint64 currentTime = QDateTime::currentMSecsSinceEpoch();
+            bool shouldProcess = (currentTime - lastProcessTime) > 50;
 
-        if (shouldSeek) {
-            size_t samplePos = static_cast<size_t>(targetPos * static_cast<double>(m_sampleRate) / 1000.0);
-            if (mp3dec_ex_seek(&m_mp3d, samplePos) == 0) {
-                lastSeekPosition = targetPos;
-                m_isFirstFrame = false;
+            if (shouldSeek) {
+                size_t samplePos = static_cast<size_t>(targetPos * static_cast<double>(m_sampleRate) / 1000.0);
+                if (mp3dec_ex_seek(&m_mp3d, samplePos) == 0) {
+                    lastSeekPosition = targetPos;
+                    m_isFirstFrame = false;
+                    lastProcessTime = currentTime;
+                } else {
+                    qWarning() << "[MP3Decoder] MP3跳转失败:" << targetPos << "ms";
+                }
+            } else if (shouldProcess) {
                 lastProcessTime = currentTime;
             } else {
-                qWarning() << "MP3跳转失败:" << targetPos << "ms";
+                msleep(1);
+                continue;
             }
-        } else if (shouldProcess) {
-            lastProcessTime = currentTime;
-        } else {
-            msleep(1);
-            continue;
-        }
 
-        // 3. 解码一帧
-        size_t samplesRead = mp3dec_ex_read(&m_mp3d, buffer, MINIMP3_MAX_SAMPLES_PER_FRAME);
+            // 3. 解码一帧
+            size_t samplesRead = mp3dec_ex_read(&m_mp3d, buffer, MINIMP3_MAX_SAMPLES_PER_FRAME);
 
-        if (samplesRead == 0) {
-            // 文件结束，可选择循环或退出
-            msleep(10);
-            continue;
-        } else if (static_cast<qint64>(samplesRead) < 0) {
-            qWarning() << "MP3解码错误";
-            break;
-        }
+            if (samplesRead == 0) {
+                // 文件结束
+                msleep(10);
+                continue;
+            } else if (static_cast<qint64>(samplesRead) < 0) {
+                qWarning() << "[MP3Decoder] MP3解码错误, code=" << samplesRead;
+                break;
+            }
 
-        // 4. 转换为浮点样本
-        std::vector<float> samples;
-        samples.reserve(samplesRead);
-        for (size_t i = 0; i < samplesRead; ++i) {
-            samples.push_back(buffer[i] / 32768.0f);
-        }
+            // 4. 转换为浮点样本
+            std::vector<float> samples;
+            samples.reserve(samplesRead);
+            for (size_t i = 0; i < samplesRead; ++i) {
+                samples.push_back(buffer[i] / 32768.0f);
+            }
 
-        // 5. 计算帧时长（毫秒）
-        qint64 frameDurationMs = static_cast<qint64>(samplesRead / m_channels / m_sampleRate * 1000.0);
+            // 5. 更新音频缓冲（容量受限，不会无限增长）
+            {
+                QMutexLocker locker(&m_mutex);
+                m_audioData.insert(m_audioData.end(), samples.begin(), samples.end());
+                if (m_audioData.size() > maxBufferSize) {
+                    size_t removeCount = m_audioData.size() - maxBufferSize;
+                    m_audioData.erase(m_audioData.begin(), m_audioData.begin() + removeCount);
+                }
+            }
 
-        // 6. 更新音频缓冲
-        {
-            QMutexLocker locker(&m_mutex);
-            m_audioData.insert(m_audioData.end(), samples.begin(), samples.end());
-            if (m_audioData.size() > maxBufferSize) {
-                size_t removeCount = m_audioData.size() - maxBufferSize;
-                m_audioData.erase(m_audioData.begin(), m_audioData.begin() + removeCount);
+            // 6. 使用 FFT 计算真实频谱
+            computeSpectrum(samples);
+
+            // 7. 每 100 帧输出一次日志（约每 2-3 秒）
+            ++frameCount;
+            if (frameCount % 100 == 0) {
+                qDebug() << "[MP3Decoder] 已解码" << frameCount << "帧, 正常运行中";
+            }
+
+            // 8. 动态休眠，避免CPU占用过高
+            if (m_audioData.size() < maxBufferSize / 2) {
+                msleep(1);
             }
         }
-
-        // 7. 使用 FFT 计算真实频谱（自动更新 m_spectrumData 并触发回调）
-        computeSpectrum(samples);
-
-        // 8. 动态休眠，避免CPU占用过高
-        if (m_audioData.size() < maxBufferSize / 2) {
-            msleep(1);
-        } else {
-            // 缓冲充足，不休眠，快速解码
-        }
+    } catch (const std::exception& e) {
+        qCritical() << "[MP3Decoder] *** 线程异常退出 *** :" << e.what()
+                    << "已解码帧数:" << frameCount;
+    } catch (...) {
+        qCritical() << "[MP3Decoder] *** 线程未知异常退出 *** 已解码帧数:" << frameCount;
     }
+
+    qDebug() << "[MP3Decoder] 解码线程正常退出, 总共解码" << frameCount << "帧";
 
     // 清理资源
     mp3dec_ex_close(&m_mp3d);

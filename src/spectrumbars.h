@@ -11,7 +11,9 @@
 #define SPECTRUMBARS_H
 
 #include <QWidget>          // 基础窗口部件
+#ifdef QT_MULTIMEDIA_ENABLED
 #include <QMediaPlayer>     // 媒体播放器
+#endif
 #include <QTimer>           // 定时器
 #include <QColor>           // 颜色定义
 #include <QPainterPath>     // 绘制路径
@@ -65,7 +67,9 @@ public:
      * 设置媒体播放器后，SpectrumBars会监听播放器的状态变化，
      * 并尝试从播放的媒体文件中获取实际音频数据用于频谱分析。
      */
+#ifdef QT_MULTIMEDIA_ENABLED
     void setMediaPlayer(QMediaPlayer *player);
+#endif
     
     /**
      * @brief 设置频谱柱的颜色方案
@@ -140,7 +144,9 @@ private slots:
      * 
      * 当播放器状态变化时调用，用于同步频谱显示状态。
      */
+#ifdef QT_MULTIMEDIA_ENABLED
     void handlePlaybackStateChanged(QMediaPlayer::PlaybackState state);
+#endif
     
     /**
      * @brief 更新频谱显示
@@ -157,13 +163,24 @@ private:
     void tryGetRealAudioData();
     
     // 核心组件
+#ifdef QT_MULTIMEDIA_ENABLED
     QMediaPlayer *m_mediaPlayer;      // 媒体播放器指针，用于获取音频数据
+#endif
     QTimer *m_updateTimer;            // 更新定时器，控制频谱刷新频率
     int m_timerId;                    // 定时器ID，用于动画效果
     
     // 频谱数据
     std::vector<float> m_spectrum;     // 存储当前频谱数据
     std::vector<float> m_peakPositions; // 存储频谱峰值位置
+    std::vector<float> m_smoothedSpectrum; // 帧间平滑后的频谱数据（减少跳动）
+
+    // Auto-Scale 机制（参考 Spectralizer 的统计缩放算法）
+    static constexpr int kScaleHistorySize = 120;  // 约 1-2 秒的历史窗口
+    std::vector<float> m_maxHistory;      // 每帧最大值历史
+    int m_historyIndex = 0;              // 环形缓冲区写入位置
+    int m_historyCount = 0;              // 已填充的有效帧数
+    float m_scaleEma = 100.0f;         // 缩放因子的 EMA（原始幅度值域，典型范围 10~500）
+    bool m_autoScaleReady = false;       // 是否已收集足够数据开始缩放
     
     // 动画属性
     qreal m_peakDecay;                // 峰值衰减速度

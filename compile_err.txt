@@ -1,0 +1,12 @@
+[1/2] CMake Configure (Qt 6.10.3)...
+-- Qt6 Multimedia components found
+-- Configuring done (0.4s)
+-- Generating done (0.3s)
+-- Build files have been written to: E:/ttplayer-cpp/build
+
+[2/2] Building...
+[1/4] Automatic MOC and UIC for target TTPlayer
+[2/3] Building CXX object CMakeFiles/TTPlayer.dir/src/spectrumbars.cpp.obj
+[3/3] Linking CXX executable TTPlayer.exe
+
+=== BUILD SUCCESS ===

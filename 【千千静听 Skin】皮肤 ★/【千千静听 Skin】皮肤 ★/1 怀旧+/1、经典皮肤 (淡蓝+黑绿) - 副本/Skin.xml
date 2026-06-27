@@ -1,0 +1,47 @@
+<skin version="2" name="¾­µäÆ¤·ô" author="nanling" url="http://ttplayer.com" email="nanling@sina.com" transparent_color="#ff00ff">
+	<player_window image="player_skin.bmp">
+		<play position="8, 125, 38, 155" image="play.bmp" />
+		<pause position="8, 125, 38, 155" image="pause.bmp" />
+		<stop position="43, 130, 63, 150" image="stop.bmp" />
+		<prev position="70, 130, 90, 150" image="prev.bmp" />
+		<next position="95, 130, 115, 150" image="next.bmp" />
+		<mute position="122, 130, 142, 150" image="mute.bmp" />
+		<open position="130, 3, 149, 22" image="open.bmp" />
+		<lyric position="158, 3, 177, 22" image="lyric.bmp" />
+		<equalizer position="180, 3, 199, 22" image="equalizer.bmp" />
+		<playlist position="202, 3, 221, 22" image="playlist.bmp" />
+		<minimize position="229, 6, 244, 21" image="minimize.bmp" />
+		<exit position="245, 6, 260, 21" image="exit.bmp" />
+		<progress position="18, 106, 248, 117" bar_image="" thumb_image="progress_thumb.bmp" />
+		<volume position="151, 130, 217, 148" vertical="false" bar_image="" thumb_image="volume_thumb.bmp" fill_image="volume_fill.bmp" />
+		<visual position="11, 30, 147, 78" />
+		<icon position="8, 86, 24, 102" />
+		<info position="28, 88, 258, 100" color="#ffff06" bkgnd="#000000" font="SimSun" font_size="12" />
+		<led position="204, 32, 254, 45" image="number.bmp" align="right" />
+		<stereo position="210, 50, 254, 62" color="#00ffff" bkgnd="#212741" font="SimSun" font_size="12" align="right" />
+		<status position="181, 65, 254, 77" color="#dcdcdc" bkgnd="#212741" font="SimSun" font_size="12" align="right" />
+	</player_window>
+	<lyric_window position="268, 0, 536, 165" resize_rect="14, 34, 256, 42" resize_tile="1" image="lyric_skin.bmp">
+		<title position="0, 8, 55, 21" image="lyric_title.bmp" align="center" />
+		<close position="245, 6, 260, 21" image="exit.bmp" align="right" />
+		<lyric position="8, 28, 260, 52" />
+	</lyric_window>
+	<equalizer_window position="268, 165, 536, 330" image="equalizer_skin.bmp" eq_interval="2">
+		<title position="0, 8, 55, 21" image="equalizer_title.bmp" align="center" />
+		<close position="245, 6, 260, 21" image="exit.bmp" align="right" />
+		<enabled position="12, 33, 31, 52" image="eq_enabled.bmp" />
+		<profile position="34, 33, 53, 52" image="eq_profile.bmp" />
+		<reset position="56, 33, 75, 52" image="eq_reset.bmp" />
+		<balance position="111, 39, 162, 48" thumb_image="eq_balance.bmp" bar_image="" />
+		<surround position="203, 39, 254, 48" thumb_image="eq_balance.bmp" bar_image="" />
+		<preamp position="13, 74, 31, 154" thumb_image="eq_thumb.bmp" bar_image="" fill_image="eq_fill.bmp" />
+		<eqfactor position="59, 74, 77, 154" thumb_image="eq_thumb.bmp" bar_image="" fill_image="eq_fill.bmp" />
+	</equalizer_window>
+	<playlist_window position="0, 165, 268, 330" resize_rect="14, 54, 254, 76" resize_tile="1" image="playlist_skin.bmp">
+		<title position="0, 8, 55, 21" image="playlist_title.bmp" align="center" />
+		<close position="245, 6, 260, 21" image="exit.bmp" align="right" />
+		<toolbar position="8, 24, 260, 44" image="playlist_toolbar.bmp" align="top+left"/>
+		<scrollbar buttons_image="scrollbar_button.bmp" thumb_image="scrollbar_thumb.bmp" bar_image="scrollbar_bar.bmp" thumb_resize_center="8" thumb_resize_tile="1"/>
+		<playlist position="9, 50, 259, 82"/>
+	</playlist_window>
+</skin>

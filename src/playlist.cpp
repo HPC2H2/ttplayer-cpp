@@ -14,7 +14,9 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QRect>
+#ifdef QT_MULTIMEDIA_ENABLED
 #include <QAudioOutput>
+#endif
 
 PlayList::PlayList(int x, int y, int width, int height, MainWindow *mainWindow)
     : QWidget(nullptr),
@@ -121,6 +123,7 @@ void PlayList::initUI()
     connect(m_songList, &QListWidget::itemDoubleClicked, this, &PlayList::selectSong);
     
     // Connect to media player signals to handle end of media
+#ifdef QT_MULTIMEDIA_ENABLED
     if (m_mainWindow) {
         QMediaPlayer *player = m_mainWindow->findChild<QMediaPlayer*>();
         if (player) {
@@ -132,6 +135,7 @@ void PlayList::initUI()
             });
         }
     }
+#endif
 }
 
 void PlayList::loadMusicFolder()
@@ -380,10 +384,11 @@ void PlayList::selectSong(QListWidgetItem *item)
         return;
     }
     
+#ifdef QT_MULTIMEDIA_ENABLED
     QMediaPlayer *player = m_mainWindow->findChild<QMediaPlayer*>();
     if (player) {
         player->setSource(QUrl::fromLocalFile(filePath));
-        
+
         // Set volume
         ImageSlider *volumeSlider = m_mainWindow->findChild<ImageSlider*>();
         if (volumeSlider) {
@@ -393,9 +398,9 @@ void PlayList::selectSong(QListWidgetItem *item)
                 audioOutput->setVolume(static_cast<float>(volume) / 100.0f);
             }
         }
-        
+
         player->play();
-        
+
         // Update play button to show pause state
         QPushButton *playBtn = m_mainWindow->findChild<QPushButton*>();
         // Find the play button by checking all buttons
@@ -412,7 +417,7 @@ void PlayList::selectSong(QListWidgetItem *item)
                 QPixmap normalPixmap = roundPixmap(images[0], round);
                 QPixmap hoverPixmap = roundPixmap(images[1], round);
                 QPixmap pressedPixmap = roundPixmap(images[2], round);
-                
+
                 // Use the MainWindow's method to set up the button
                 QMetaObject::invokeMethod(m_mainWindow, "setupHoverPressedIcon", Qt::DirectConnection,
                                          Q_ARG(QPushButton*, playBtn),
@@ -421,12 +426,15 @@ void PlayList::selectSong(QListWidgetItem *item)
                                          Q_ARG(QPixmap, pressedPixmap));
             }
         }
-        
+
         loadLyrics(filePath, m_mainWindow);
-        
+
         // Update the selected item in the list
         m_songList->setCurrentItem(item);
     }
+#else
+    Q_UNUSED(filePath)
+#endif
 }
 
 // Add a new method to update the playlist file
@@ -617,13 +625,17 @@ void PlayList::updateLyrics()
     if (m_lyrics.isEmpty() || !m_mainWindow) {
         return;
     }
-    
+
+#ifdef QT_MULTIMEDIA_ENABLED
     QMediaPlayer *player = m_mainWindow->findChild<QMediaPlayer*>();
     if (!player) {
         return;
     }
-    
+
     qint64 currentTime = player->position();
+#else
+    qint64 currentTime = 0;  // 无 Multimedia 时无法获取播放位置
+#endif
     
     // Find current lyrics line
     int newIndex = -1;
