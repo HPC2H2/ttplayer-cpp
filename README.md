@@ -192,6 +192,6 @@ ninja
 - [Spectralizer](https://github.com/univrsal/spectralizer) - 频谱处理参考
 
 ### 更新日志
-- **2025-06-27**: 频谱可视化完整重写（AudioSpectrum 风格算法）；修复循环播放时频谱卡顿问题；替换 kissFFT 为自研 FFT 实现；新增 `.skn` 皮肤引擎与换肤功能；新增 AudioPlayer 后端
+- **2026-06-27**: 频谱可视化完整重写（AudioSpectrum 风格算法）；修复循环播放时频谱卡顿问题；替换 kissFFT 为自研 FFT 实现；新增 `.skn` 皮肤引擎与换肤功能；新增 AudioPlayer 后端
 - **2025-08-13**: 引入频谱显示功能，基于 minimp3 + kissFFT 实现 MP3 解码和 FFT 频谱分析
 - **2025-08-xx**: 从 PyQt5 版本移植到 Qt 6.8.2 / C++17
