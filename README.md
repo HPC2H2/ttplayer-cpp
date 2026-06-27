@@ -8,7 +8,23 @@
 ## English
 
 ### Introduction
-TTPlayer is a lightweight music player developed with Qt 6 and C++. This project is a port of the original [TTPlayer](https://github.com/jthhpcqy/ttplayer) which was developed using PyQt5. The goal of this port is to improve performance and provide a native application experience while maintaining the same beautiful UI and functionality.
+TTPlayer is a lightweight music player developed with Qt 6 and C++. This project is a port of the original [TTPlayer](https://github.com/jthhpcqy/ttplayer) which was developed using PyQt5. The goal is to improve performance and provide a native application experience while maintaining the classic **千千静听** UI.
+
+### Screenshots
+
+#### Default Skin (Purple)
+![Default Purple Skin](t2.png)
+
+#### Skin Switching (Drag & Drop `.skn` file)
+Supports loading original 千千静听 skin packages at runtime — simply drag any `.skn` file onto the player window:
+
+| XP Style | HiFi 31 Digital | Classic Gray | Retro Radio |
+|:---:|:---:|:---:|:---:|
+| ![XP Skin](t4.png) | ![HiFi Skin](t5.png) | ![Gray Skin](t6.png) | ![Radio Skin](t7.png) |
+
+> **Note**: The original 千千静听 UI for comparison:
+>
+> ![Original 千千静听](t1.png)
 
 ### Features
 - Clean and modern UI (supports custom `.skn` skins via drag-and-drop)
@@ -19,8 +35,11 @@ TTPlayer is a lightweight music player developed with Qt 6 and C++. This project
 - Volume control
 - Keyboard shortcuts for playback control
 - Window opacity animation effects
-- Always-on-top option
 - Progress bar seeking with synchronized spectrum position
+
+### Known Issues / TODO
+- **Text overflow on some skins**: When using certain skins (e.g., the Radio skin in screenshot `t7.png`), status text such as *"已切换皮肤：..."* can exceed the visible area and get clipped or garbled. This is because label geometry is currently hardcoded for the default Purple skin layout; dynamic skin-aware label sizing has not yet been implemented.
+- Further UI adaptation work needed: button alignment, font scaling, and element positioning vary across different skin packages.
 
 ### Requirements
 - Qt 6.x (tested with Qt 6.10.3)
@@ -79,7 +98,7 @@ After building, run `build/TTPlayer.exe`. Drag MP3 files onto the player window 
   3. Gain amplification
   4. Spatial convolution smoothing (kernel `[1,2,3,5,3,2,1]`)
   5. EMA temporal smoothing (α=0.55) + peak decay indicators
-- **SkinEngine**: Parses `.skn` skin packages with XML config, supports dynamic skin switching at runtime
+- **SkinEngine**: Parses `.skn` skin packages (BMP images + XML config), supports dynamic skin switching at runtime via drag-and-drop. Falls back to built-in Purple default skin when no external skin is loaded.
 - **PlayList**: Manages playback queue, handles auto-loop (next song on EndOfMedia)
 
 ### About This Project
@@ -106,6 +125,22 @@ All copyrights belong to the original authors. This project is for educational p
 ### 简介
 TTPlayer 是一款使用 Qt 6 和 C++ 开发的轻量级音乐播放器。本项目是原始 [TTPlayer](https://github.com/jthhpcqy/ttplayer)（使用 PyQt5 开发）的 C++ 移植版本，在保持经典千千静听界面风格的同时提供原生性能体验。
 
+### 截图展示
+
+#### 默认皮肤（Purple）
+![默认 Purple 皮肤](t2.png)
+
+#### 换肤功能（拖放 `.skn` 文件即可切换）
+支持在运行时加载原版千千静听皮肤包 —— 将任意 `.skn` 文件拖放到播放器窗口即可：
+
+| XP 风格 | HiFi 31 数字风 | 经典灰 | 复古收音机 |
+|:---:|:---:|:---:|:---:|
+| ![XP 皮肤](t4.png) | ![HiFi 皮肤](t5.png) | ![灰色皮肤](t6.png) | ![收音机皮肤](t7.png) |
+
+> **附：原版千千静听界面对照**
+>
+> ![原版千千静听](t1.png)
+
 ### 功能特点
 - 简洁现代的 UI（支持拖放 `.skn` 皮肤文件动态换肤）
 - 播放列表管理，支持自动循环播放
@@ -115,8 +150,11 @@ TTPlayer 是一款使用 Qt 6 和 C++ 开发的轻量级音乐播放器。本项
 - 音量控制滑块
 - 键盘快捷键控制播放
 - 窗口透明度动画效果
-- 窗口置顶选项
 - 进度条拖拽定位，频谱位置同步跟随
+
+### 已知问题 / 待改进
+- **部分皮肤存在文字溢出**：在使用某些皮肤时（如截图 `t7.png` 的收音机皮肤），状态文字（如 *"已切换皮肤：..."*）可能超出可见区域，出现截断或乱码。这是因为当前标签几何尺寸为默认 Purple 皮肤硬编码，尚未实现根据不同皮肤包动态调整标签大小与位置的功能。
+- 其他 UI 适配工作待完善：按钮对齐、字体缩放、元素布局在不同皮肤包间存在差异。
 
 ### 系统要求
 - Qt 6.x（已测试 Qt 6.10.3）
@@ -172,7 +210,7 @@ ninja
   3. 增益放大
   4. 空间卷积平滑（核 `[1,2,3,5,3,2,1]`）
   5. EMA 时间平滑（α=0.55）+ 峰值衰减指示器
-- **SkinEngine**：解析 `.skn` 皮肤包的 XML 配置，运行时动态换肤
+- **SkinEngine**：解析 `.skn` 皮肤包（BMP 图片 + XML 配置），运行时通过拖放动态换肤；无外部皮肤时回退内置 Purple 默认皮肤
 - **PlayList**：管理播放队列，EndOfMedia 时自动切下一首
 
 ### 关于本项目
@@ -192,6 +230,6 @@ ninja
 - [Spectralizer](https://github.com/univrsal/spectralizer) - 频谱处理参考
 
 ### 更新日志
-- **2026-06-27**: 频谱可视化完整重写（AudioSpectrum 风格算法）；修复循环播放时频谱卡顿问题；替换 kissFFT 为自研 FFT 实现；新增 `.skn` 皮肤引擎与换肤功能；新增 AudioPlayer 后端
+- **2026-06-27**: 频谱可视化完整重写（AudioSpectrum 风格算法）；修复循环播放时频谱卡顿问题；替换 kissFFT 为自研 FFT 实现；新增 `.skn` 皮肤引擎与拖放换肤功能（支持多套千千静听原版皮肤包）；修复按钮重复创建导致的 UI 异常；UI 对齐原版千千静听（移除多余置顶按钮）
 - **2025-08-13**: 引入频谱显示功能，基于 minimp3 + kissFFT 实现 MP3 解码和 FFT 频谱分析
 - **2025-08-xx**: 从 PyQt5 版本移植到 Qt 6.8.2 / C++17

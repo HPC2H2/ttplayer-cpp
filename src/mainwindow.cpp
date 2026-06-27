@@ -28,6 +28,21 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent),
+      // 按钮指针全部初始化为 nullptr（配合 applyDefaultSkinUI 的幂等保护）
+      m_musicListBtn(nullptr),
+      m_previewBtn(nullptr),
+      m_playBtn(nullptr),
+      m_nextBtn(nullptr),
+      m_fixedBtn(nullptr),
+      m_miniTopBtn(nullptr),
+      m_minBtn(nullptr),
+      m_closeBtn(nullptr),
+      m_lrcBtn(nullptr),
+      // 滑块 / 标签 / 频谱
+      m_progressSlider(nullptr),
+      m_volumeSlider(nullptr),
+      m_currentLyricLabel(nullptr),
+      m_spectrumBars(nullptr),
 #ifdef QT_MULTIMEDIA_ENABLED
       m_player(nullptr),
 #else
@@ -38,6 +53,11 @@ MainWindow::MainWindow(QWidget *parent)
       m_currentPlayingPath(QString()),
       m_dragging(false),
       m_playlistWindow(nullptr),
+      // 快捷键 / 动画
+      m_spaceShortcut(nullptr),
+      m_upShortcut(nullptr),
+      m_downShortcut(nullptr),
+      m_animation(nullptr),
       m_usingExternalSkin(false)
 {
     // Enable drag and drop
@@ -131,26 +151,27 @@ void MainWindow::applyDefaultSkinUI()
     setPalette(palette);
     setAutoFillBackground(true);
 
-    // ---- 创建按钮 ----
-    m_musicListBtn = new QPushButton(this);
-    m_previewBtn = new QPushButton(this);   // prev
-    m_playBtn = new QPushButton(this);
-    m_nextBtn = new QPushButton(this);
-    m_fixedBtn = new QPushButton(this);     // ontop
-    m_miniTopBtn = new QPushButton(this);   // minimode
-    m_minBtn = new QPushButton(this);
-    m_closeBtn = new QPushButton(this);
-    m_lrcBtn = new QPushButton(this);
+    // ---- 创建按钮（幂等保护：避免重复创建）----
+    if (!m_musicListBtn) m_musicListBtn = new QPushButton(this);
+    if (!m_previewBtn) m_previewBtn = new QPushButton(this);   // prev
+    if (!m_playBtn) m_playBtn = new QPushButton(this);
+    if (!m_nextBtn) m_nextBtn = new QPushButton(this);
+    if (!m_fixedBtn) m_fixedBtn = new QPushButton(this);     // ontop
+    if (!m_miniTopBtn) m_miniTopBtn = new QPushButton(this);   // minimode
+    if (!m_minBtn) m_minBtn = new QPushButton(this);           // minimize
+    if (!m_closeBtn) m_closeBtn = new QPushButton(this);       // close
+    if (!m_lrcBtn) m_lrcBtn = new QPushButton(this);           // lyric
 
     // 布局位置（Purple 默认皮肤）
     m_musicListBtn->setGeometry(20, 145, 31, 13);
     m_previewBtn->setGeometry(80, 136, 35, 35);
     m_playBtn->setGeometry(130, 130, 50, 50);
     m_nextBtn->setGeometry(200, 136, 35, 35);
-    m_fixedBtn->setGeometry(220, 7, 17, 15);
-    m_miniTopBtn->setGeometry(240, 7, 17, 15);
-    m_minBtn->setGeometry(260, 7, 17, 15);
-    m_closeBtn->setGeometry(280, 7, 17, 15);
+    m_fixedBtn->hide();  // 原版千千静听无此置顶按钮
+    // m_fixedBtn->setGeometry(220, 7, 17, 15);
+    m_miniTopBtn->setGeometry(220, 7, 17, 15);  // 左移补位
+    m_minBtn->setGeometry(240, 7, 17, 15);
+    m_closeBtn->setGeometry(260, 7, 17, 15);
     m_lrcBtn->setGeometry(260, 145, 31, 13);
 
     // 按钮图片映射（默认 Purple 皮肤）
@@ -176,26 +197,32 @@ void MainWindow::applyDefaultSkinUI()
         }
     }
 
-    // ---- 进度条 ----
-    QPixmap sliderPixmap = cropImageIntoFourHorizontal(":/skin/Purple/progress_thumb.bmp")[0];
-    sliderPixmap = roundPixmap(sliderPixmap, 5);
-    m_progressSlider = new ImageSlider(sliderPixmap, this);
+    // ---- 进度条（幂等保护）----
+    if (!m_progressSlider) {
+        QPixmap sliderPixmap = cropImageIntoFourHorizontal(":/skin/Purple/progress_thumb.bmp")[0];
+        sliderPixmap = roundPixmap(sliderPixmap, 5);
+        m_progressSlider = new ImageSlider(sliderPixmap, this);
+    }
     m_progressSlider->move(10, 112);
     m_progressSlider->setFixedWidth(290);
 
-    // ---- 音量滑块 ----
-    QPixmap volumePixmap = cropImageIntoFourHorizontal(":/skin/Purple/progress_thumb.bmp")[0];
-    volumePixmap = roundPixmap(volumePixmap, 5);
-    int scaledW = static_cast<int>(volumePixmap.width() * 1.1);
-    int scaledH = static_cast<int>(volumePixmap.height() * 1.1);
-    volumePixmap = volumePixmap.scaled(scaledW, scaledH, Qt::KeepAspectRatio);
-    m_volumeSlider = new ImageSlider(volumePixmap, this);
+    // ---- 音量滑块（幂等保护）----
+    if (!m_volumeSlider) {
+        QPixmap volumePixmap = cropImageIntoFourHorizontal(":/skin/Purple/progress_thumb.bmp")[0];
+        volumePixmap = roundPixmap(volumePixmap, 5);
+        int scaledW = static_cast<int>(volumePixmap.width() * 1.1);
+        int scaledH = static_cast<int>(volumePixmap.height() * 1.1);
+        volumePixmap = volumePixmap.scaled(scaledW, scaledH, Qt::KeepAspectRatio);
+        m_volumeSlider = new ImageSlider(volumePixmap, this);
+    }
     m_volumeSlider->move(205, 71);
     m_volumeSlider->setFixedWidth(92);
     m_volumeSlider->setValue(m_volumeSlider->currentVolume());
 
-    // ---- 歌词标签 ----
-    m_currentLyricLabel = new FadingLabel("", this);
+    // ---- 歌词标签（幂等保护）----
+    if (!m_currentLyricLabel) {
+        m_currentLyricLabel = new FadingLabel("", this);
+    }
     m_currentLyricLabel->setStyleSheet(
         "color: #9370DB; font-size: 14px; font-weight: normal; "
         "font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; "
@@ -206,8 +233,10 @@ void MainWindow::applyDefaultSkinUI()
     m_currentLyricLabel->setAlignment(Qt::AlignCenter);
     m_currentLyricLabel->move(15, 30);
 
-    // ---- 频谱柱状图 ----
-    m_spectrumBars = new SpectrumBars(this);
+    // ---- 频谱柱状图（幂等保护）----
+    if (!m_spectrumBars) {
+        m_spectrumBars = new SpectrumBars(this);
+    }
     m_spectrumBars->setGeometry(15, 70, 280, 40);
     m_spectrumBars->setStyleSheet("background-color: transparent;");
 #ifdef QT_MULTIMEDIA_ENABLED
@@ -220,11 +249,13 @@ void MainWindow::applyDefaultSkinUI()
     m_spectrumBars->raise();
     m_spectrumBars->show();
 
-    // ---- 播放列表窗口 ----
-    m_playlistWindow = new PlayList(
-        geometry().x(), geometry().y(),
-        geometry().width(), geometry().height(), this
-    );
+    // ---- 播放列表窗口（幂等保护）----
+    if (!m_playlistWindow) {
+        m_playlistWindow = new PlayList(
+            geometry().x(), geometry().y(),
+            geometry().width(), geometry().height(), this
+        );
+    }
 
     // ---- 快捷键 ----
     m_spaceShortcut = new QShortcut(QKeySequence(Qt::Key_Space), this);
