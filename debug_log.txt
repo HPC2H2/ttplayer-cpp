@@ -8,7 +8,7 @@ Unknown property text-overflow
 Unknown property word-wrap
 Already exists in playlist
 [DropEvent] foundValidFile= true firstValidPath= "C:/Users/hpc2h/Music/Ğ¡Æ»¹û.mp3" m_playlistWindow= valid
-[mp3 @ 000001c95dde3680] Estimating duration from bitrate, this may be inaccurate
+[mp3 @ 0000025e2b860180] Estimating duration from bitrate, this may be inaccurate
 Input #0, mp3, from 'C:/Users/hpc2h/Music/å°è‹¹æœ.mp3':
   Metadata:
     album           : å°è‹¹æœ
@@ -27,100 +27,34 @@ Input #0, mp3, from 'C:/Users/hpc2h/Music/å°è‹¹æœ.mp3':
 ³É¹¦ÆôÓÃÊµÊ±MP3½âÂë: "C:/Users/hpc2h/Music/Ğ¡Æ»¹û.mp3"
 [Player] playbackStateChanged: QMediaPlayer::PlayingState
 [MP3Decoder] ½âÂëÏß³Ì¿ªÊ¼ÔËĞĞ, sampleRate= 44100 channels= 2
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 0 ms Ê±¼ä: 1782571140067
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 0 ms Ê±¼ä: 1782571741950
 SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 862 ms Ê±¼ä: 1782571141068
-SpectrumBars: ½âÂëÆ÷ÕıÔÚÔËĞĞ£¬Ìø¹ıÖØ¸´ openFile
-QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 29701 ms Ê±¼ä: 1782571142068
-QMetaObject::invokeMethod: No such method PlayList::updateLyrics()
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 65645 ms Ê±¼ä: 1782571143068
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 66664 ms Ê±¼ä: 1782571144068
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 731 ms Ê±¼ä: 1782571742952
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 1724 ms Ê±¼ä: 1782571743960
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 2716 ms Ê±¼ä: 1782571744960
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 3735 ms Ê±¼ä: 1782571745960
 [MP3Decoder] ÒÑ½âÂë 100 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 67657 ms Ê±¼ä: 1782571145077
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 68675 ms Ê±¼ä: 1782571146078
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 69668 ms Ê±¼ä: 1782571147091
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 70661 ms Ê±¼ä: 1782571148098
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 4728 ms Ê±¼ä: 1782571746960
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 5720 ms Ê±¼ä: 1782571747960
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 6739 ms Ê±¼ä: 1782571748960
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 7732 ms Ê±¼ä: 1782571749960
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 8724 ms Ê±¼ä: 1782571750961
 [MP3Decoder] ÒÑ½âÂë 200 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 71680 ms Ê±¼ä: 1782571149108
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 72724 ms Ê±¼ä: 1782571150108
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 73717 ms Ê±¼ä: 1782571151108
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 74710 ms Ê±¼ä: 1782571152108
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 75728 ms Ê±¼ä: 1782571153108
-[SPEC-DBG]  bar[0]= 0  bar[10]= 0.487587  bar[20]= 0.233265  bar[40]= 0.00669065
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 9717 ms Ê±¼ä: 1782571751970
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 10736 ms Ê±¼ä: 1782571752971
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 11728 ms Ê±¼ä: 1782571753975
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 12721 ms Ê±¼ä: 1782571754981
+[SPEC-DBG]  bar[0]= 0  bar[10]= 0.287434  bar[20]= 0.175452  bar[40]= 0.00202785
 [MP3Decoder] ÒÑ½âÂë 300 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 76721 ms Ê±¼ä: 1782571154108
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 77662 ms Ê±¼ä: 1782571155108
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 78680 ms Ê±¼ä: 1782571156111
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 79725 ms Ê±¼ä: 1782571157117
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 80718 ms Ê±¼ä: 1782571158118
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 13740 ms Ê±¼ä: 1782571755981
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 14733 ms Ê±¼ä: 1782571756982
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 15725 ms Ê±¼ä: 1782571757985
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 16718 ms Ê±¼ä: 1782571758990
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 17789 ms Ê±¼ä: 1782571759991
 [MP3Decoder] ÒÑ½âÂë 400 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 81711 ms Ê±¼ä: 1782571159128
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 82729 ms Ê±¼ä: 1782571160139
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 83722 ms Ê±¼ä: 1782571161148
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 84767 ms Ê±¼ä: 1782571162158
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 18782 ms Ê±¼ä: 1782571760991
+[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 19774 ms Ê±¼ä: 1782571762000
+playAudio: hasSongs= true source= QUrl("file:///C:/Users/hpc2h/Music/Ğ¡Æ»¹û.mp3") state= QMediaPlayer::PlayingState
+[Player] playbackStateChanged: QMediaPlayer::PausedState
 [MP3Decoder] ÒÑ½âÂë 500 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 85760 ms Ê±¼ä: 1782571163168
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 86778 ms Ê±¼ä: 1782571164169
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 87771 ms Ê±¼ä: 1782571165178
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 88764 ms Ê±¼ä: 1782571166178
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 89756 ms Ê±¼ä: 1782571167178
-[SPEC-DBG]  bar[0]= 0  bar[10]= 0.182181  bar[20]= 0.15755  bar[40]= 0.015902
-[MP3Decoder] ÒÑ½âÂë 600 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 90775 ms Ê±¼ä: 1782571168178
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 91768 ms Ê±¼ä: 1782571169188
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 92760 ms Ê±¼ä: 1782571170188
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 93779 ms Ê±¼ä: 1782571171189
-[MP3Decoder] ÒÑ½âÂë 700 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 94772 ms Ê±¼ä: 1782571172198
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 95764 ms Ê±¼ä: 1782571173201
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 96809 ms Ê±¼ä: 1782571174208
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 97828 ms Ê±¼ä: 1782571175208
-[MainWindow] ¼ì²âµ½ .skn ÎÄ¼şÍÏ·Å£¬¿ªÊ¼»»·ô: "E:/ttplayer-cpp/¡¾Ç§Ç§¾²Ìı Skin¡¿Æ¤·ô ¡ï/¡¾Ç§Ç§¾²Ìı Skin¡¿Æ¤·ô ¡ï/1 »³¾É+/8¡¢XPÀ¶ (À¶ÂÌ+»Ò).skn"
-[SkinParser] ZIP ½âÑ¹Íê³É: "E:/ttplayer-cpp/¡¾Ç§Ç§¾²Ìı Skin¡¿Æ¤·ô ¡ï/¡¾Ç§Ç§¾²Ìı Skin¡¿Æ¤·ô ¡ï/1 »³¾É+/8¡¢XPÀ¶ (À¶ÂÌ+»Ò).skn" -> "C:/Users/hpc2h/AppData/Local/Temp/TTPlayer-lGPaqS" ( 39 ¸öÎÄ¼ş)
-[SkinParser] ³É¹¦½âÎöÆ¤·ô: "XP??(§³)" - player ÔªËØÊı: 20
-[SkinParser] ´ÓÄ¿Â¼¼ÓÔØÆ¤·ô³É¹¦: "XP??(§³)"
-[SkinEngine] ³É¹¦¼ÓÔØÆ¤·ô: "XP??(§³)" from "8¡¢XPÀ¶ (À¶ÂÌ+»Ò).skn" - Ä¿Â¼: "C:/Users/hpc2h/AppData/Local/Temp/TTPlayer-lGPaqS"
-[MainWindow] ÊÕµ½Æ¤·ô±ä»¯Í¨Öª: "XP??(§³)"
-[MainWindow] »»·ô³É¹¦! ĞÂÆ¤·ô: "XP??(§³)"
-Unknown property text-overflow
-Unknown property word-wrap
-Unknown property text-overflow
-Unknown property word-wrap
-[MainWindow] Æ¤·ôÓ¦ÓÃ³É¹¦: "XP??(§³)" - ´°¿Ú³ß´ç: 275 x 116
-[DropEvent] foundValidFile= false firstValidPath= "" m_playlistWindow= valid
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 98821 ms Ê±¼ä: 1782571176208
-[MP3Decoder] ÒÑ½âÂë 800 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 99813 ms Ê±¼ä: 1782571177222
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 100806 ms Ê±¼ä: 1782571178227
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 101825 ms Ê±¼ä: 1782571179232
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 102817 ms Ê±¼ä: 1782571180238
-[SPEC-DBG]  bar[0]= 0  bar[10]= 0.261028  bar[20]= 0.104841  bar[40]= 0.0134984
-[MP3Decoder] ÒÑ½âÂë 900 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 103810 ms Ê±¼ä: 1782571181238
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 104829 ms Ê±¼ä: 1782571182248
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 105822 ms Ê±¼ä: 1782571183251
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 106814 ms Ê±¼ä: 1782571184257
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 107807 ms Ê±¼ä: 1782571185258
-[MP3Decoder] ÒÑ½âÂë 1000 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 108878 ms Ê±¼ä: 1782571186258
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 109871 ms Ê±¼ä: 1782571187258
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 110863 ms Ê±¼ä: 1782571188258
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 111856 ms Ê±¼ä: 1782571189268
-[MP3Decoder] ÒÑ½âÂë 1100 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 112875 ms Ê±¼ä: 1782571190268
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 113867 ms Ê±¼ä: 1782571191268
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 114860 ms Ê±¼ä: 1782571192268
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 115879 ms Ê±¼ä: 1782571193268
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 116871 ms Ê±¼ä: 1782571194277
-[SPEC-DBG]  bar[0]= 0  bar[10]= 0.175856  bar[20]= 0.123843  bar[40]= 0.00641608
-[MP3Decoder] ÒÑ½âÂë 1200 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 117864 ms Ê±¼ä: 1782571195278
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 118857 ms Ê±¼ä: 1782571196288
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 119875 ms Ê±¼ä: 1782571197288
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 120868 ms Ê±¼ä: 1782571198288
-[MP3Decoder] ÒÑ½âÂë 1300 Ö¡, Õı³£ÔËĞĞÖĞ
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 121861 ms Ê±¼ä: 1782571199288
-[Ö÷Ïß³Ì] updateFrame ²¥·ÅÎ»ÖÃ: 122880 ms Ê±¼ä: 1782571200288
-[MP3Decoder] ½âÂëÏß³ÌÕı³£ÍË³ö, ×Ü¹²½âÂë 1341 Ö¡
-[SkinParser] ÒÑÇåÀíÁÙÊ±Ä¿Â¼: "C:/Users/hpc2h/AppData/Local/Temp/TTPlayer-lGPaqS"
+[MP3Decoder] ½âÂëÏß³ÌÕı³£ÍË³ö, ×Ü¹²½âÂë 508 Ö¡

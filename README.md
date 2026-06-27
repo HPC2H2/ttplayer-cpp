@@ -13,7 +13,7 @@ TTPlayer is a lightweight music player developed with Qt 6 and C++. This project
 ### Screenshots
 
 #### Default Skin (Purple)
-![Default Purple Skin](t2.png)
+![Default Purple Skin](t3.png)
 
 #### Skin Switching (Drag & Drop `.skn` file)
 Supports loading original 千千静听 skin packages at runtime — simply drag any `.skn` file onto the player window:
@@ -24,7 +24,7 @@ Supports loading original 千千静听 skin packages at runtime — simply drag 
 
 > **Note**: The original 千千静听 UI for comparison:
 >
-> ![Original 千千静听](t1.png)
+> ![Original 千千静听](t2.png)
 
 ### Features
 - Clean and modern UI (supports custom `.skn` skins via drag-and-drop)
@@ -128,7 +128,7 @@ TTPlayer 是一款使用 Qt 6 和 C++ 开发的轻量级音乐播放器。本项
 ### 截图展示
 
 #### 默认皮肤（Purple）
-![默认 Purple 皮肤](t2.png)
+![默认 Purple 皮肤](t3.png)
 
 #### 换肤功能（拖放 `.skn` 文件即可切换）
 支持在运行时加载原版千千静听皮肤包 —— 将任意 `.skn` 文件拖放到播放器窗口即可：
@@ -139,7 +139,7 @@ TTPlayer 是一款使用 Qt 6 和 C++ 开发的轻量级音乐播放器。本项
 
 > **附：原版千千静听界面对照**
 >
-> ![原版千千静听](t1.png)
+> ![原版千千静听](t2.png)
 
 ### 功能特点
 - 简洁现代的 UI（支持拖放 `.skn` 皮肤文件动态换肤）
@@ -149,8 +149,8 @@ TTPlayer 是一款使用 Qt 6 和 C++ 开发的轻量级音乐播放器。本项
 - **实时频谱可视化** — 41 柱对数频率分布，A 计权感知加权，空间卷积平滑，EMA 帧间平滑，峰值指示器
 - 音量控制滑块
 - 键盘快捷键控制播放
-- 窗口透明度动画效果
 - 进度条拖拽定位，频谱位置同步跟随
+- 窗口透明度动画效果
 
 ### 已知问题 / 待改进
 - **部分皮肤存在文字溢出**：在使用某些皮肤时（如截图 `t7.png` 的收音机皮肤），状态文字（如 *"已切换皮肤：..."*）可能超出可见区域，出现截断或乱码。这是因为当前标签几何尺寸为默认 Purple 皮肤硬编码，尚未实现根据不同皮肤包动态调整标签大小与位置的功能。
@@ -213,8 +213,28 @@ ninja
 - **SkinEngine**：解析 `.skn` 皮肤包（BMP 图片 + XML 配置），运行时通过拖放动态换肤；无外部皮肤时回退内置 Purple 默认皮肤
 - **PlayList**：管理播放队列，EndOfMedia 时自动切下一首
 
+### 项目结构
+```
+ttplayer-cpp/
+├── src/                  # 源代码
+│   ├── mainwindow.cpp/h  # 主窗口（UI构建、换肤、拖放）
+│   ├── spectrumbars.cpp/h # 频谱可视化（FFT + 渲染）
+│   ├── mp3decoder.cpp/h   # MP3解码线程（minimp3）
+│   ├── fft.h              # 自实现 FFT（1024点）
+│   ├── playlist.cpp/h     # 播放列表管理
+│   ├── skinengine.cpp/h   # 皮肤引擎（.skn 解析与加载）
+│   ├── skinparser.cpp/h   # 皮肤 XML 配置解析
+│   ├── imageslider.cpp/h  # 自定义图片滑块
+│   └── fadinglabel.cpp/h  # 淡入淡出歌词标签
+├── skin/                 # 内置默认 Purple 皮肤资源
+├── Designer_ui/          # Qt Designer UI 文件
+├── tools/                # 辅助工具脚本
+├── 【千千静听 Skin】皮肤 ★/ # 原版千千静听皮肤包集合
+├── CMakeLists.txt        # CMake 构建配置
+└── _rebuild.bat          # 一键构建脚本
+```
+
 ### 关于本项目
-本项目是一个学习练习，使用现代技术重新创建了经典中文音乐播放器"千千静听"的界面和功能。原始千千静听由郑南岭先生开发。
 
 这个 C++ 版本是对 [jthhpcqy](https://github.com/jthhpcqy/ttplayer) 的 Python 实现的移植。
 
@@ -230,6 +250,13 @@ ninja
 - [Spectralizer](https://github.com/univrsal/spectralizer) - 频谱处理参考
 
 ### 更新日志
-- **2026-06-27**: 频谱可视化完整重写（AudioSpectrum 风格算法）；修复循环播放时频谱卡顿问题；替换 kissFFT 为自研 FFT 实现；新增 `.skn` 皮肤引擎与拖放换肤功能（支持多套千千静听原版皮肤包）；修复按钮重复创建导致的 UI 异常；UI 对齐原版千千静听（移除多余置顶按钮）
+- **2026-06-27**:
+  - 频谱可视化完整重写（AudioSpectrum 风格算法：对数频率映射、A计权、空间/时间平滑）
+  - 修复循环播放时频谱卡顿（sourceChanged 时停旧解码线程）
+  - 替换 kissFFT 为自研 FFT 实现（fft.h, 1024 点）
+  - 新增 SkinEngine：拖放 `.skn` 文件动态换肤，支持原版千千静听皮肤包
+  - 修复按钮重复创建导致的 UI 异常与闪退（构造函数补全 nullptr 初始化 + 幂等保护）
+  - UI 对齐原版千千静听（移除多余置顶按钮，右上角三按钮右移）
+  - README 补充截图展示、项目结构、已知问题记录
 - **2025-08-13**: 引入频谱显示功能，基于 minimp3 + kissFFT 实现 MP3 解码和 FFT 频谱分析
 - **2025-08-xx**: 从 PyQt5 版本移植到 Qt 6.8.2 / C++17

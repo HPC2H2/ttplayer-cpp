@@ -168,10 +168,9 @@ void MainWindow::applyDefaultSkinUI()
     m_playBtn->setGeometry(130, 130, 50, 50);
     m_nextBtn->setGeometry(200, 136, 35, 35);
     m_fixedBtn->hide();  // 原版千千静听无此置顶按钮
-    // m_fixedBtn->setGeometry(220, 7, 17, 15);
-    m_miniTopBtn->setGeometry(220, 7, 17, 15);  // 左移补位
-    m_minBtn->setGeometry(240, 7, 17, 15);
-    m_closeBtn->setGeometry(260, 7, 17, 15);
+    m_miniTopBtn->setGeometry(245, 7, 17, 15);
+    m_minBtn->setGeometry(268, 7, 17, 15);
+    m_closeBtn->setGeometry(290, 7, 17, 15);     // 贴近右边缘
     m_lrcBtn->setGeometry(260, 145, 31, 13);
 
     // 按钮图片映射（默认 Purple 皮肤）
